@@ -26,6 +26,8 @@ $text;                          //text that user sent.sometimes the callback dat
 $username;                      //user name
 $message_id;
 
+require "User.php";
+
 function levelFinder()
 {
     global $user_id;
@@ -280,30 +282,8 @@ function main()
                 $username = $update->message->from->username;
                 $user_firstname = $update->message->from->first_name;
             }
-            levelFinder();
-            if ($level == "begin")
-                askGender();
-            else if ($level == "gender_asked" || $level == "no_valid_gender")
-                askAge();
-            else if ($level == "age_asked")
-                askHeight();
-            else if ($level == "height_asked")
-                askWeight();
-            else if ($level == "weight_asked")
-                askWaist();
-            elseif ($level == "waist_asked")
-                askNeck();
-            elseif ($level == "neck_asked")
-                askHip();
-            elseif ($level == "hip_asked")
-                askEmail();
-            elseif ($level == "email_asked")
-                finish(0);
-            elseif ($text == "Agingnannn" || $level == "finish")
-            {
-                mysqli_query($db, "UPDATE pabepa_bot.users SET level = 'begin' WHERE user_id = {$user_id}");
-                askGender();
-            }
+            $User = new User($message_id, $text, $user_id);
+            $User->process();
             $last_updated_id = $update->update_id;              //should be removed
         }           //should be removed
     }               //should be removed
